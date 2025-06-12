@@ -12,6 +12,22 @@ jobs:
     name: Build Backend
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: examen_db
+          MYSQL_USER: examen_user
+          MYSQL_PASSWORD: examen_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,7 +43,7 @@ jobs:
           go mod tidy
           go build ./cmd/main.go
 
-      - name: Run tests (optional)
+      - name: Run tests
         working-directory: backend
         run: |
           go test ./...
