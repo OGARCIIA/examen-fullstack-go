@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_examen
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: examen_db
+      MYSQL_USER: examen_user
+      MYSQL_PASSWORD: examen_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: backend_examen
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      DB_USER: examen_user
+      DB_PASSWORD: examen_password
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: examen_db
+      JWT_SECRET: supersecret
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_examen
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

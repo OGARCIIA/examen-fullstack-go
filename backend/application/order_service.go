@@ -1,0 +1,62 @@
+package application
+
+import (
+	"errors"
+	"time"
+
+	"gorm.io/gorm"
+
+	"github.com/OGARCIIA/examen-backend/domain"
+	"github.com/OGARCIIA/examen-backend/infrastructure"
+)
+
+func CreateOrder(productID uint, quantity int) (*domain.Order, error) {
+	var product domain.Product
+
+	// Hacemos todo en una transacción (para asegurar consistencia)
+	err := infrastructure.DB.Transaction(func(tx *gorm.DB) error {
+		// Obtenemos el producto con "FOR UPDATE" implícito (con Lock)
+		if err := tx.Clauses(
+		// gorm.io/gorm/clause ya maneja los locks, pero con MySQL a veces no se necesita explícito aquí
+		).First(&product, productID).Error; err != nil {
+			return err
+		}
+
+		// Verificamos si hay suficiente stock
+		if product.Stock < quantity {
+			return errors.New("not enough stock")
+		}
+
+		// Descontamos el stock
+		product.Stock -= quantity
+		if err := tx.Save(&product).Error; err != nil {
+			return err
+		}
+
+		// Creamos la orden
+		order := domain.Order{
+			ProductID: productID,
+			Quantity:  quantity,
+			Total:     float64(quantity) * product.Price,
+			Date:      time.Now(),
+		}
+
+		if err := tx.Create(&order).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Volvemos a obtener la orden (para devolverla completa)
+	var createdOrder domain.Order
+	if err := infrastructure.DB.Last(&createdOrder).Error; err != nil {
+		return nil, err
+	}
+
+	return &createdOrder, nil
+}
