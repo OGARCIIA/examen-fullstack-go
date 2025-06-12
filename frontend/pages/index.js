@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
 import ProductList from '../components/ProductList';
+import { Typography, Box } from '@mui/material';
 
 const IndexPage = () => {
   const [token, setToken] = useState('');
@@ -23,7 +24,11 @@ const IndexPage = () => {
 
   return (
     <Layout>
-      <h1>Productos</h1>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Productos
+        </Typography>
+      </Box>
       <ProductList token={token} />
     </Layout>
   );

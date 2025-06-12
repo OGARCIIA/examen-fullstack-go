@@ -27,18 +27,20 @@ const ProductList = ({ token }) => {
     fetchProducts();
   }, [token]);
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <CircularProgress sx={{ display: 'block', mx: 'auto', my: 4 }} />;
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={3} justifyContent="center">
       {products.map((product) => (
-        <Grid item xs={12} sm={6} md={4} key={product.id}>
-          <Card>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+          <Card elevation={4} sx={{ minHeight: 180 }}>
             <CardContent>
-              <Typography variant="h6">{product.name}</Typography>
-              <Typography>{product.description}</Typography>
-              <Typography>Precio: ${product.price}</Typography>
-              <Typography>Stock: {product.stock}</Typography>
+              <Typography variant="h6" gutterBottom>{product.name}</Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                {product.description}
+              </Typography>
+              <Typography variant="body1">Precio: ${product.price}</Typography>
+              <Typography variant="body1">Stock: {product.stock}</Typography>
             </CardContent>
           </Card>
         </Grid>

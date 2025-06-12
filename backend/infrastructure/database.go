@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"log"
-	"path/filepath"
 
 	"github.com/OGARCIIA/examen-backend/config"
 	"github.com/joho/godotenv"
@@ -14,12 +13,21 @@ import (
 var DB *gorm.DB
 
 func InitDatabase() {
-	absPath, err := filepath.Abs(filepath.Join("..", ".env"))
-	if err != nil {
-		log.Fatal("Error getting absolute path for .env: ", err)
+	pathsToTry := []string{
+		".env",
+		"../.env",
+		"../../.env",
 	}
 
-	err = godotenv.Load(absPath)
+	var err error
+	for _, p := range pathsToTry {
+		err = godotenv.Load(p)
+		if err == nil {
+			log.Printf("Loaded .env from %s", p)
+			break
+		}
+	}
+
 	if err != nil {
 		log.Fatal("Error loading .env file: ", err)
 	}

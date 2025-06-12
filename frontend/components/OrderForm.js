@@ -44,11 +44,13 @@ const OrderForm = ({ token }) => {
       alert('Orden creada con éxito!');
     } catch (err) {
       console.error(err);
-      alert('Error al crear la orden');
+      const errorMsg = err.response?.data?.error || 'Error al crear la orden';
+      alert(errorMsg);
     } finally {
       setLoading(false);
     }
   };
+
 
   if (products.length === 0) return <CircularProgress />;
 

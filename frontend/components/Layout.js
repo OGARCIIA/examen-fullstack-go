@@ -5,7 +5,7 @@ import Link from 'next/link';
 const Layout = ({ children }) => {
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ mb: 4 }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Examen Fullstack - Catálogo & Órdenes
