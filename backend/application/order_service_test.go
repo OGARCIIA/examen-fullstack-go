@@ -10,7 +10,14 @@ import (
 func setupTestDBOrders(t *testing.T) {
 	infrastructure.InitDatabase()
 
-	err := infrastructure.DB.Exec("DELETE FROM orders").Error
+	// AutoMigrar las tablas (muy importante en GitHub Actions)
+	err := infrastructure.DB.AutoMigrate(&domain.Product{}, &domain.Order{})
+	if err != nil {
+		t.Fatalf("Error al hacer AutoMigrate: %v", err)
+	}
+
+	// Limpiar las tablas
+	err = infrastructure.DB.Exec("DELETE FROM orders").Error
 	if err != nil {
 		t.Fatalf("Error al limpiar tabla orders: %v", err)
 	}

@@ -10,7 +10,14 @@ import (
 func setupTestDB(t *testing.T) {
 	infrastructure.InitDatabase()
 
-	err := infrastructure.DB.Exec("DELETE FROM orders").Error
+	// AutoMigrar las tablas (necesario en los tests, ya que el pipeline es un MySQL nuevo)
+	err := infrastructure.DB.AutoMigrate(&domain.Product{}, &domain.Order{})
+	if err != nil {
+		t.Fatalf("Error al hacer AutoMigrate: %v", err)
+	}
+
+	// Limpiar las tablas
+	err = infrastructure.DB.Exec("DELETE FROM orders").Error
 	if err != nil {
 		t.Fatalf("Error al limpiar tabla orders: %v", err)
 	}
