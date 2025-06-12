@@ -13,18 +13,14 @@ import (
 func CreateOrder(productID uint, quantity int) (*domain.Order, error) {
 	var product domain.Product
 
-	// Hacemos todo en una transacción (para asegurar consistencia)
 	err := infrastructure.DB.Transaction(func(tx *gorm.DB) error {
-		// Obtenemos el producto con "FOR UPDATE" implícito (con Lock)
-		if err := tx.Clauses(
-		// gorm.io/gorm/clause ya maneja los locks, pero con MySQL a veces no se necesita explícito aquí
-		).First(&product, productID).Error; err != nil {
+		if err := tx.Clauses().First(&product, productID).Error; err != nil {
 			return err
 		}
 
 		// Verificamos si hay suficiente stock
 		if product.Stock < quantity {
-			return errors.New("not enough stock")
+			return errors.New("No hay suficiente stock.")
 		}
 
 		// Descontamos el stock

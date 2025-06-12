@@ -13,9 +13,23 @@ import (
 var DB *gorm.DB
 
 func InitDatabase() {
-	err := godotenv.Load()
+	pathsToTry := []string{
+		".env",
+		"../.env",
+		"../../.env",
+	}
+
+	var err error
+	for _, p := range pathsToTry {
+		err = godotenv.Load(p)
+		if err == nil {
+			log.Printf("Loaded .env from %s", p)
+			break
+		}
+	}
+
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file: ", err)
 	}
 
 	dsn := config.GetDBConnectionString()
