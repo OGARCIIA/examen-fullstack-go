@@ -29,7 +29,9 @@ examen-fullstack-go/
 ✅ Autenticación con JWT temporal  
 ✅ Logs con logrus  
 ✅ Manejo de concurrencia en creación de órdenes  
-✅ Expuesto en contenedor Docker
+✅ Expuesto en contenedor Docker  
+✅ Cobertura de pruebas unitarias en servicios de productos y órdenes  
+✅ Arquitectura basada en principios de Clean Architecture (separación de capas: domain, application, infrastructure, presentation)
 
 ### Frontend
 
@@ -46,6 +48,21 @@ examen-fullstack-go/
 - Build del backend
 - Build del frontend
 - Tests unitarios del backend
+
+## Pruebas unitarias
+
+El backend cuenta con pruebas unitarias sobre los servicios de productos y órdenes:
+
+- `product_service.go`: pruebas de creación, recuperación, actualización y eliminación de productos.
+- `order_service.go`: pruebas de creación de órdenes con manejo de stock.
+
+Las pruebas se pueden ejecutar localmente con:
+
+```bash
+go test -v ./application
+```
+
+Estas pruebas garantizan la consistencia del sistema y la funcionalidad de los procesos críticos.
 
 ## Cómo ejecutar el proyecto localmente
 
@@ -86,6 +103,7 @@ El pipeline se ejecuta automáticamente al realizar `git push` sobre la rama `ma
 
 - Los productos deben ser creados inicialmente vía API (Postman) para que el frontend los consuma.
 - El JWT temporal es generado desde `/generate-token` y se usa en las peticiones protegidas.
+- Las pruebas unitarias se pueden ejecutar localmente con `go test -v ./application`.
 
 ## Autor
 

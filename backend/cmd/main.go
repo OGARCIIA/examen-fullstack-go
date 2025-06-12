@@ -17,7 +17,6 @@ func main() {
 
 	r.Use(infrastructure.CORSMiddleware())
 
-	// Endpoint público que genera el token
 	r.GET("/generate-token", func(c *gin.Context) {
 		token, err := infrastructure.GenerateJWT()
 		if err != nil {
