@@ -20,7 +20,7 @@ func CreateOrder(productID uint, quantity int) (*domain.Order, error) {
 
 		// Verificamos si hay suficiente stock
 		if product.Stock < quantity {
-			return errors.New("No hay suficiente stock")
+			return errors.New("No hay suficiente stock.")
 		}
 
 		// Descontamos el stock
